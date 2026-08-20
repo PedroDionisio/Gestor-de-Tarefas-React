@@ -1,8 +1,35 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# 📋 Gestor de Tarefas
+ 
+Aplicação web para gestão de tarefas do dia a dia, construída como projeto de aprendizagem em React, cobre desde os fundamentos (componentes, estado, props) até navegação entre páginas e persistência de dados no browser.
+ 
+## 🚀 Tecnologias
+ 
+- **React** + **Vite** — Base da aplicação
+- **Tailwind CSS** — Estilo
+- **React Router DOM** — Navegação entre páginas (SPA)
+- **UUID** — Geração de identificadores únicos
+- **Lucide React** — Icones
+- **localStorage** — Persistência de dados no browser
+## ✨ Funcionalidades
+ 
+- ✅ Listar tarefas
+- ➕ Adicionar novas tarefas
+- ✔️ Marcar/desmarcar tarefas como concluídas
+- 🗑️ Apagar tarefas
+- 🔍 Ver detalhes de uma tarefa numa página dedicada, com os dados passados via parâmetros de URL
+- 💾 Persistência de dados — as tarefas mantêm-se guardadas entre atualizações da página
+## 🛠️ Como correr o projeto localmente
+ 
+```bash
+git clone https://github.com/PedroDionisio/Gestor-de-Tarefas-React.git
+cd Gestor-de-Tarefas-React
+npm install
+npm run dev
+```
+## 📸 Pré-visualização
+ 
+*(espaço reservado para screenshot ou GIF da aplicação)*
+ 
+## 📄 Licença
+ 
+Projeto desenvolvido para fins de aprendizagem.
