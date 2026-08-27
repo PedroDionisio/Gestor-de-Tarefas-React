@@ -10,14 +10,14 @@ function AddTask({ onAddTaskSubmit }) {
         placeholder="Escreva o titulo da tarefa"
         className="border border-slate-300 outline-slate-400 px-4 py-2 rounded-md"
         value={title}
-        onChange={() => setTitle(event.target.value)}
+        onChange={(e) => setTitle(e.target.value)}
       ></input>
       <input
         type="text"
         placeholder="Escreva a descriçao da tarefa"
         className="border border-slate-300 outline-slate-400 px-4 py-2 rounded-md"
         value={description}
-        onChange={() => setDescription(event.target.value)}
+        onChange={(e) => setDescription(e.target.value)}
       ></input>
       <button
         onClick={() => {

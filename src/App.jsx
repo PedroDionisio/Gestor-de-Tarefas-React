@@ -64,6 +64,19 @@ function App() {
     setTasks([...tasks, newTask]);
   }
 
+  function onEditTask(taskId, newTitle, newDescription) {
+    const newTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          title: newTitle,
+          description: newDescription,
+        };
+      }
+      return task;
+    });
+    setTasks(newTasks);
+  }
   return (
     <div className="w-screen h-screen bg-slate-500 flex justify-center p-6">
       <div className="w-[500px] space-y-4">
@@ -73,6 +86,7 @@ function App() {
           tasks={tasks}
           onTaskClick={onTaskClick}
           onDeleteTaskClick={onDeleteTaskClick}
+          onEditTask={onEditTask}
         />
       </div>
     </div>
