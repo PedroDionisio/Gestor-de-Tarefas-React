@@ -15,6 +15,7 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 - ✅ Listar tarefas
 - ➕ Adicionar novas tarefas
 - ✔️ Marcar/desmarcar tarefas como concluídas
+- ✏️ Editar título e descrição de uma tarefa
 - 🗑️ Apagar tarefas
 - 🔍 Ver detalhes de uma tarefa numa página dedicada, com os dados passados via parâmetros de URL
 - 💾 Persistência de dados — as tarefas mantêm-se guardadas entre atualizações da página
