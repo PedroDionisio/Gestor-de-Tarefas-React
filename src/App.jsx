@@ -43,13 +43,17 @@ function App() {
           isCompleted: !task.isCompleted,
         };
       }
-      //Nao é preciso atualizar(como se fosse um else com return=task),neste caso podemos meter logo return
       return task;
     });
     setTasks(newTasks);
   }
 
   function onDeleteTaskClick(taskId) {
+    const confirmDelete = window.confirm(
+      "Tem a certeza que pretende eliminar esta tarefa?",
+    );
+    if (!confirmDelete) return;
+
     const newTasks = tasks.filter((task) => task.id != taskId);
     setTasks(newTasks);
   }
@@ -60,6 +64,7 @@ function App() {
       title: title,
       description: description,
       isCompleted: false,
+      createdAt: new Date().toLocaleDateString(),
     };
     setTasks([...tasks, newTask]);
   }
