@@ -17,8 +17,11 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 - ✔️ Marcar/desmarcar tarefas como concluídas
 - ✏️ Editar título e descrição de uma tarefa
 - 🗑️ Apagar tarefas
-- 🔍 Ver detalhes de uma tarefa numa página dedicada, com os dados passados via parâmetros de URL
-- 💾 Persistência de dados — as tarefas mantêm-se guardadas entre atualizações da página
+- 🔎 Filtrar tarefas por Todas / Pendentes / Concluídas
+- 📊 Contador de tarefas concluidas - mostra quantas tarefas estão concluídas
+- ✅ Validação no formulário - impede de submeter os campos título ou descrição de uma tarefa vazios
+- 🔍 Ver detalhes de uma tarefa numa página diferente e dedicada a cada tarefa
+- 💾 Persistência dos dados - as tarefas mantêm-se guardadas entre as atualizações da página (LocalStorage)
 ## 🛠️ Como correr o projeto localmente
  
 ```bash
@@ -30,7 +33,6 @@ npm run dev
 ## 📸 Pré-visualização
  
 *(espaço reservado para screenshot ou GIF da aplicação)*
- 
-## 📄 Licença
+
  
 Projeto desenvolvido para fins de aprendizagem.
