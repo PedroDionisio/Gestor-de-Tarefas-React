@@ -18,6 +18,8 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 - ✏️ Editar título e descrição de uma tarefa
 - 🗑️ Apagar tarefas
 - 🔎 Filtrar tarefas por Todas / Pendentes / Concluídas
+- 🔤 Pesquisar tarefas através de um campo de texto em tempo real
+- ⬍⬍ Ordenar tarefas por data ou por título
 - 📊 Contador de tarefas concluidas - mostra quantas tarefas estão concluídas
 - ✅ Validação no formulário - impede de submeter os campos título ou descrição de uma tarefa vazios
 - 🔍 Ver detalhes de uma tarefa numa página diferente e dedicada a cada tarefa
