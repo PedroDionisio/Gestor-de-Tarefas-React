@@ -1,7 +1,8 @@
-import { ChevronRightIcon, TrashIcon } from "lucide-react";
+import { ChevronRightIcon, TrashIcon, SquarePen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ButtonIntoPage from "./ButtonIntoPage";
 import ButtonTrash from "./ButtonTrash";
+import ButtonEdit from "./ButtonEdit";
 import { useState } from "react";
 
 function Tasks({ tasks, onTaskClick, onDeleteTaskClick, onEditTask }) {
@@ -182,12 +183,9 @@ function Task({
             Guardar
           </button>
         ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-yellow-500 text-white p-2 rounded-md"
-          >
-            Editar
-          </button>
+          <ButtonEdit onClick={() => setIsEditing(true)}>
+            <SquarePen />
+          </ButtonEdit>
         )}
 
         <ButtonIntoPage onClick={() => onSeeDetailsClick(task)}>
