@@ -15,10 +15,7 @@ function Tasks({ tasks, onTaskClick, onDeleteTaskClick, onEditTask }) {
   const numTotal = tasks.length;
 
   function onSeeDetailsClick(task) {
-    const query = new URLSearchParams();
-    query.set("title", task.title);
-    query.set("description", task.description);
-    navigate(`/task?${query.toString()}`);
+    navigate(`/task?id=${task.id}`);
   }
 
   function handleFilterClick(filterValue) {
@@ -152,12 +149,12 @@ function Task({
               placeholder="Título"
               className="border border-slate-300 px-2 py-2 rounded-md w-full"
             />
-            <input
-              type="text"
+            <textarea
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
               placeholder="Descrição"
               className="border border-slate-300 px-2 py-2 rounded-md w-full"
+              rows={3}
             />
           </div>
         ) : (
