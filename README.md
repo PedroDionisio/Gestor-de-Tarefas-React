@@ -4,12 +4,12 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
  
 ## 🚀 Tecnologias
  
-- **React** + **Vite** — Base da aplicação
-- **Tailwind CSS** — Estilo
-- **React Router DOM** — Navegação entre páginas (SPA)
-- **UUID** — Geração de identificadores únicos
-- **Lucide React** — Icones
-- **localStorage** — Persistência de dados no browser
+- **React** + **Vite** - Base da aplicação
+- **Tailwind CSS** - Estilo
+- **React Router DOM** - Navegação entre páginas (SPA)
+- **UUID** - Geração de identificadores únicos
+- **Lucide React** - Icones
+- **localStorage** - Persistência de dados no browser
 ## ✨ Funcionalidades
  
 - ✅ Listar tarefas
