@@ -34,7 +34,7 @@ npm run dev
 ```
 ## 📸 Pré-visualização
  
-*(espaço reservado para screenshot ou GIF da aplicação)*
+*(espaço reservado para screenshot)*
 
  
 Projeto desenvolvido para fins de aprendizagem.
