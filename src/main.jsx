@@ -1,23 +1,41 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import TaskPage from "./Pages/TaskPage.jsx";
+import "./index.css";
+
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { TasksProvider } from "./contexts/TasksContext";
+import AppLayout from "./components/AppLayout";
+import Login from "./pages/Login";
+import TasksPage from "./pages/TasksPage";
+import TaskDetails from "./pages/TaskDetails";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
+  { path: "/login", element: <Login /> },
   {
-    path: "/",
-    element: <App />,
+    element: (
+      <ProtectedRoute>
+        <TasksProvider>
+          <AppLayout />
+        </TasksProvider>
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "/", element: <TasksPage /> },
+      { path: "/tarefas/:taskId", element: <TaskDetails /> },
+      { path: "/perfil", element: <Profile /> },
+    ],
   },
-  {
-    path: "/task",
-    element: <TaskPage />,
-  },
+  { path: "*", element: <NotFound /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );

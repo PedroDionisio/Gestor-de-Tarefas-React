@@ -1,22 +1,32 @@
-import { ChevronRightIcon, TrashIcon, SquarePen } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import ButtonIntoPage from "./ButtonIntoPage";
-import ButtonTrash from "./ButtonTrash";
-import ButtonEdit from "./ButtonEdit";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRightIcon, SquarePen, TrashIcon } from "lucide-react";
+import IconButton from "./IconButton";
+import { formatDate } from "../utils/formatDate";
+import { useTasks } from "../contexts/TasksContext";
 
-function Tasks({ tasks, onTaskClick, onDeleteTaskClick, onEditTask }) {
-  const navigate = useNavigate();
+const FILTERS = [
+  { value: "all", label: "Todas", emptyMessage: "Sem tarefas!" },
+  {
+    value: "pending",
+    label: "Pendentes",
+    emptyMessage: "Sem tarefas pendentes!",
+  },
+  {
+    value: "completed",
+    label: "Concluídas",
+    emptyMessage: "Sem tarefas concluídas!",
+  },
+];
+
+function Tasks() {
+  const { tasks } = useTasks();
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("none");
 
   const numCompleted = tasks.filter((task) => task.isCompleted).length;
   const numTotal = tasks.length;
-
-  function onSeeDetailsClick(task) {
-    navigate(`/task?id=${task.id}`);
-  }
 
   function handleFilterClick(filterValue) {
     setFilter((current) => (current === filterValue ? "all" : filterValue));
@@ -37,65 +47,47 @@ function Tasks({ tasks, onTaskClick, onDeleteTaskClick, onEditTask }) {
     if (sortBy === "date") return new Date(a.createdAt) - new Date(b.createdAt);
     return 0;
   });
-  const emptyMessages = {
-    all: "Sem tarefas!",
-    pending: "Sem tarefas pendentes!",
-    completed: "Sem tarefas concluídas!",
-  };
+
+  const emptyMessage = FILTERS.find((f) => f.value === filter).emptyMessage;
 
   return (
-    <div className="p-6 bg-slate-200 rounded-md shadow space-y-4">
+    <div className="space-y-4 rounded-md bg-slate-200 p-6 shadow">
       {numTotal > 0 && (
-        <p className="text-slate-600 text-sm text-center">
+        <p className="text-center text-sm text-slate-600">
           {numCompleted} de {numTotal} tarefas concluídas
         </p>
       )}
 
-      <div className="flex gap-2 justify-center">
-        <button
-          onClick={() => handleFilterClick("all")}
-          className={`px-4 py-2 rounded-md font-medium ${
-            filter === "all"
-              ? "bg-slate-500 text-white"
-              : "bg-slate-300 text-slate-700"
-          }`}
-        >
-          Todas
-        </button>
-        <button
-          onClick={() => handleFilterClick("pending")}
-          className={`px-4 py-2 rounded-md font-medium ${
-            filter === "pending"
-              ? "bg-slate-500 text-white"
-              : "bg-slate-300 text-slate-700"
-          }`}
-        >
-          Pendentes
-        </button>
-        <button
-          onClick={() => handleFilterClick("completed")}
-          className={`px-4 py-2 rounded-md font-medium ${
-            filter === "completed"
-              ? "bg-slate-500 text-white"
-              : "bg-slate-300 text-slate-700"
-          }`}
-        >
-          Concluídas
-        </button>
+      <div className="flex justify-center gap-2">
+        {FILTERS.map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => handleFilterClick(value)}
+            className={`rounded-md px-4 py-2 font-medium ${
+              filter === value
+                ? "bg-slate-500 text-white"
+                : "bg-slate-300 text-slate-700"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       <input
         type="text"
         placeholder="Pesquisar tarefa..."
+        aria-label="Pesquisar tarefa"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="border border-slate-300 px-4 py-2 rounded-md w-full"
+        className="w-full rounded-md border border-slate-300 px-4 py-2"
       />
 
       <select
         value={sortBy}
+        aria-label="Ordenar tarefas"
         onChange={(e) => setSortBy(e.target.value)}
-        className="border border-slate-300 px-4 py-2 rounded-md w-full"
+        className="w-full rounded-md border border-slate-300 px-4 py-2"
       >
         <option value="none">Ordem de criação</option>
         <option value="date">Ordenar por data</option>
@@ -103,95 +95,94 @@ function Tasks({ tasks, onTaskClick, onDeleteTaskClick, onEditTask }) {
       </select>
 
       {sortedTasks.length === 0 && (
-        <p className="text-slate-500 text-center">
+        <p className="text-center text-slate-500">
           {searchQuery
             ? `Nenhuma tarefa encontrada para "${searchQuery}"`
-            : emptyMessages[filter]}
+            : emptyMessage}
         </p>
       )}
 
       <ul className="space-y-4">
         {sortedTasks.map((task) => (
-          <Task
-            key={task.id}
-            task={task}
-            onTaskClick={onTaskClick}
-            onDeleteTaskClick={onDeleteTaskClick}
-            onEditTask={onEditTask}
-            onSeeDetailsClick={onSeeDetailsClick}
-          />
+          <TaskItem key={task.id} task={task} />
         ))}
       </ul>
     </div>
   );
 }
 
-function Task({
-  task,
-  onTaskClick,
-  onDeleteTaskClick,
-  onEditTask,
-  onSeeDetailsClick,
-}) {
+function TaskItem({ task }) {
+  const { toggleTask, updateTask, deleteTask } = useTasks();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(task.description);
 
+  function handleSave() {
+    updateTask(task.id, { title: editTitle, description: editDescription });
+    setIsEditing(false);
+  }
+
+  function handleDelete() {
+    if (window.confirm("Tem a certeza que pretende eliminar esta tarefa?"))
+      deleteTask(task.id);
+  }
+
   return (
-    <li className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        {isEditing ? (
-          <div className="flex flex-col gap-2 w-full">
-            <input
-              type="text"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              placeholder="Título"
-              className="border border-slate-300 px-2 py-2 rounded-md w-full"
-            />
-            <textarea
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              placeholder="Descrição"
-              className="border border-slate-300 px-2 py-2 rounded-md w-full"
-              rows={3}
-            />
-          </div>
-        ) : (
-          <button
-            onClick={() => onTaskClick(task.id)}
-            className={`bg-slate-400 text-left w-full text-white p-2 rounded-md ${task.isCompleted && "line-through"}`}
-          >
-            <span className="block">{task.title}</span>
-            <span className="block text-xs text-slate-200 font-normal">
-              Criada a {task.createdAt}
-            </span>
-          </button>
-        )}
+    <li className="flex gap-2">
+      {isEditing ? (
+        <div className="flex w-full flex-col gap-2">
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            aria-label="Título"
+            className="w-full rounded-md border border-slate-300 px-2 py-2"
+          />
+          <textarea
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+            aria-label="Descrição"
+            className="w-full rounded-md border border-slate-300 px-2 py-2"
+            rows={3}
+          />
+        </div>
+      ) : (
+        <button
+          onClick={() => toggleTask(task.id)}
+          className={`w-full rounded-md bg-slate-400 p-2 text-left text-white ${
+            task.isCompleted ? "line-through" : ""
+          }`}
+        >
+          <span className="block">{task.title}</span>
+          <span className="block text-xs font-normal text-slate-200">
+            Criada a {formatDate(task.createdAt)}
+          </span>
+        </button>
+      )}
 
-        {isEditing ? (
-          <button
-            onClick={() => {
-              onEditTask(task.id, editTitle, editDescription);
-              setIsEditing(false);
-            }}
-            className="bg-green-500 text-white p-2 rounded-md"
-          >
-            Guardar
-          </button>
-        ) : (
-          <ButtonEdit onClick={() => setIsEditing(true)}>
-            <SquarePen />
-          </ButtonEdit>
-        )}
+      {isEditing ? (
+        <button
+          onClick={handleSave}
+          className="rounded-md bg-green-500 p-2 text-white"
+        >
+          Guardar
+        </button>
+      ) : (
+        <IconButton label="Editar tarefa" onClick={() => setIsEditing(true)}>
+          <SquarePen />
+        </IconButton>
+      )}
 
-        <ButtonIntoPage onClick={() => onSeeDetailsClick(task)}>
-          <ChevronRightIcon />
-        </ButtonIntoPage>
-        <ButtonTrash onClick={() => onDeleteTaskClick(task.id)}>
-          <TrashIcon />
-        </ButtonTrash>
-      </div>
+      <IconButton
+        label="Ver detalhes"
+        onClick={() => navigate(`/tarefas/${task.id}`)}
+      >
+        <ChevronRightIcon />
+      </IconButton>
+      <IconButton label="Eliminar tarefa" onClick={handleDelete}>
+        <TrashIcon />
+      </IconButton>
     </li>
   );
 }
