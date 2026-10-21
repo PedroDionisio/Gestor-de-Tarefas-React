@@ -3,27 +3,45 @@
 Aplicação web para gestão de tarefas do dia a dia, construída como projeto de aprendizagem em React, cobre desde os fundamentos (componentes, estado, props) até navegação entre páginas e persistência de dados no browser.
  
 ## 🚀 Tecnologias
- 
-- **React** + **Vite** - Base da aplicação
-- **Tailwind CSS** - Estilo
-- **React Router DOM** - Navegação entre páginas (SPA)
-- **UUID** - Geração de identificadores únicos
-- **Lucide React** - Icones
-- **localStorage** - Persistência de dados no browser
+
+| Tecnologia | Utilização |
+|---|---|
+| **React 18** + **Vite** | Base da aplicação e ambiente de desenvolvimento |
+| **React Router 6** (`createBrowserRouter`) | Navegação SPA, rotas aninhadas, rotas dinâmicas e rotas protegidas |
+| **Context API** | Estado global da sessão (`AuthContext`) e das tarefas (`TasksContext`) |
+| **Tailwind CSS** | Estilos |
+| **localStorage** | Persistência da sessão e das tarefas de cada utilizador |
+| **UUID** | Identificadores únicos das tarefas |
+| **Lucide React** | Ícones |
+| **ESLint** | Qualidade e consistência do código |
+
+
 ## ✨ Funcionalidades
- 
-- ✅ Listar tarefas
-- ➕ Adicionar novas tarefas
-- ✔️ Marcar/desmarcar tarefas como concluídas
-- ✏️ Editar título e descrição de uma tarefa
-- 🗑️ Apagar tarefas
-- 🔎 Filtrar tarefas por Todas / Pendentes / Concluídas
-- 🔤 Pesquisar tarefas através de um campo de texto em tempo real
-- ⬍⬍ Ordenar tarefas por data ou por título
-- 📊 Contador de tarefas concluidas - mostra quantas tarefas estão concluídas
-- ✅ Validação no formulário - impede de submeter os campos título ou descrição de uma tarefa vazios
-- 🔍 Ver detalhes de uma tarefa numa página diferente e dedicada a cada tarefa
-- 💾 Persistência dos dados - as tarefas mantêm-se guardadas entre as atualizações da página (LocalStorage)
+
+### Autenticação
+- 🔐 Login com contas de demonstração e validação de credenciais
+- 🛡️ Rotas protegidas: sem sessão iniciada, o utilizador é redirecionado para o login e, depois de entrar, volta à página que tentou abrir
+- 👤 Página de perfil com os dados do utilizador
+- 💾 A sessão mantém-se ao atualizar a página e termina com "Sair"
+
+### Tarefas
+- ➕ Criar tarefas com título e descrição, com validação de campos vazios
+- ✔️ Marcar e desmarcar tarefas como concluídas
+- ✏️ Editar o título e a descrição, na lista ou na página de detalhe
+- 🗑️ Apagar tarefas, com pedido de confirmação
+- 🔍 Página de detalhe para cada tarefa (`/tarefas/:id`), com "Mostrar mais" nas descrições longas
+- 👥 **Tarefas separadas por utilizador:** cada conta vê apenas as suas tarefas
+
+### Organização
+- 🗂️ Filtros: Todas, Pendentes e Concluídas
+- 🔎 Pesquisa por título em tempo real
+- ↕️ Ordenação por data de criação ou por título
+- 📊 Contador de tarefas concluídas
+- 📅 Data de criação guardada em formato ISO e apresentada em formato português
+
+### Acessibilidade
+- ♿ Botões com ícone com `aria-label`, formulário de login com `label` associado a cada campo
+
 ## 🛠️ Como correr o projeto localmente
  
 ```bash
