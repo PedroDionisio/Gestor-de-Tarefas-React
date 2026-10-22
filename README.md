@@ -7,7 +7,7 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 | Tecnologia | Utilização |
 |---|---|
 | **React 18** + **Vite** | Base da aplicação e ambiente de desenvolvimento |
-| **React Router 6** (`createBrowserRouter`) | Navegação SPA, rotas aninhadas, rotas dinâmicas e rotas protegidas |
+| **React Router 6** (`createBrowserRouter`) | Navegação SPA, rotas, rotas dinâmicas e rotas protegidas |
 | **Context API** | Estado global da sessão (`AuthContext`) e das tarefas (`TasksContext`) |
 | **Tailwind CSS** | Estilos |
 | **localStorage** | Persistência da sessão e das tarefas de cada utilizador |
