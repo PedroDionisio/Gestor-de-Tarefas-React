@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon, SquarePen, TrashIcon } from "lucide-react";
 import IconButton from "./IconButton";
+import Loader from "./Loader";
 import { formatDate } from "../utils/formatDate";
 import { useTasks } from "../contexts/TasksContext";
 
@@ -20,7 +21,7 @@ const FILTERS = [
 ];
 
 function Tasks() {
-  const { tasks } = useTasks();
+  const { tasks, isLoading } = useTasks();
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("none");
@@ -94,7 +95,9 @@ function Tasks() {
         <option value="title">Ordenar por título</option>
       </select>
 
-      {sortedTasks.length === 0 && (
+      {isLoading && <Loader />}
+
+      {!isLoading && sortedTasks.length === 0 && (
         <p className="text-center text-slate-500">
           {searchQuery
             ? `Nenhuma tarefa encontrada para "${searchQuery}"`
@@ -118,8 +121,11 @@ function TaskItem({ task }) {
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(task.description);
 
-  function handleSave() {
-    updateTask(task.id, { title: editTitle, description: editDescription });
+  async function handleSave() {
+    await updateTask(task.id, {
+      title: editTitle,
+      description: editDescription,
+    });
     setIsEditing(false);
   }
 

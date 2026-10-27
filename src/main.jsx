@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { TasksProvider } from "./contexts/TasksContext";
 import AppLayout from "./components/AppLayout";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import TasksPage from "./pages/TasksPage";
 import TaskDetails from "./pages/TaskDetails";
 import Profile from "./pages/Profile";
@@ -15,6 +16,7 @@ import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
+  { path: "/registo", element: <Signup /> },
   {
     element: (
       <ProtectedRoute>

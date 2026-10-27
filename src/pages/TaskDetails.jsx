@@ -2,26 +2,35 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, SquarePen } from "lucide-react";
 import { useTasks } from "../contexts/TasksContext";
+import ErrorMessage from "../components/ErrorMessage";
+import Loader from "../components/Loader";
 import TextExpander from "../components/TextExpander";
 import Title from "../components/Title";
 
 function TaskDetails() {
   const { taskId } = useParams();
-  const { tasks, updateTask } = useTasks();
+  const { tasks, isLoading, error, updateTask } = useTasks();
   const navigate = useNavigate();
   const task = tasks.find((task) => task.id === taskId);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(task?.title ?? "");
-  const [editDescription, setEditDescription] = useState(
-    task?.description ?? "",
-  );
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
 
-  function handleEditClick() {
-    if (isEditing)
-      updateTask(taskId, { title: editTitle, description: editDescription });
+  async function handleEditClick() {
+    if (isEditing) {
+      await updateTask(taskId, {
+        title: editTitle,
+        description: editDescription,
+      });
+    } else {
+      setEditTitle(task.title);
+      setEditDescription(task.description);
+    }
     setIsEditing((current) => !current);
   }
+
+  if (isLoading) return <Loader className="text-slate-100" />;
 
   if (!task)
     return (
@@ -35,6 +44,8 @@ function TaskDetails() {
 
   return (
     <div className="space-y-4">
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+
       <div className="relative flex justify-center">
         <button
           onClick={() => navigate(-1)}

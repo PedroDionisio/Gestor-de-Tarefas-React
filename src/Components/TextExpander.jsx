@@ -9,7 +9,7 @@ function TextExpander({
 }) {
   const [isExpanded, setIsExpanded] = useState(expanded);
 
-  const words = children.split(/\s+/);
+  const words = children.split(" ");
   const isLongText = words.length > collapsedNumWords;
 
   const displayText = isExpanded

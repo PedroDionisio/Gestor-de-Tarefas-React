@@ -1,47 +1,83 @@
-import { createContext, useContext, useState } from "react";
-import { FAKE_USERS } from "../data/fakeUsers";
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../services/supabase";
+import { login, logout, signup } from "../services/apiAuth";
+import {
+  getProfile,
+  updateProfile as updateProfileApi,
+} from "../services/apiProfile";
 
 const AuthContext = createContext();
 
-const SESSION_KEY = "gestor-session";
-
-function getStoredUser() {
-  try {
-    return JSON.parse(localStorage.getItem(SESSION_KEY));
-  } catch {
-    return null;
-  }
-}
-
 function AuthProvider({ children }) {
-  const [user, setUser] = useState(getStoredUser);
+  const [sessionUser, setSessionUser] = useState(undefined);
+  const [profile, setProfile] = useState(null);
 
-  function login(email, password) {
-    const account = FAKE_USERS.find(
-      (fakeUser) =>
-        fakeUser.email === email.trim().toLowerCase() &&
-        fakeUser.password === password,
-    );
-    if (!account) return false;
+  useEffect(function () {
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSessionUser(
+        session ? { id: session.user.id, email: session.user.email } : null,
+      );
+    });
 
-    const sessionUser = {
-      id: account.id,
-      name: account.name,
-      email: account.email,
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
-    setUser(sessionUser);
-    return true;
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  const userId = sessionUser?.id;
+
+  useEffect(
+    function () {
+      if (!userId) return;
+      let ignore = false;
+
+      async function loadProfile() {
+        try {
+          const data = await getProfile(userId);
+          if (!ignore) setProfile(data);
+        } catch {
+          if (!ignore)
+            setProfile({ id: userId, name: "", bio: "", avatarUrl: null });
+        }
+      }
+
+      loadProfile();
+      return () => {
+        ignore = true;
+      };
+    },
+    [userId],
+  );
+
+  async function updateProfile(changes) {
+    const data = await updateProfileApi(userId, changes);
+    setProfile(data);
   }
 
-  function logout() {
-    localStorage.removeItem(SESSION_KEY);
-    setUser(null);
-  }
+  const isCheckingSession = sessionUser === undefined;
+  const isLoadingProfile = Boolean(sessionUser) && profile?.id !== userId;
+  const isLoading = isCheckingSession || isLoadingProfile;
+
+  const user =
+    sessionUser && !isLoadingProfile
+      ? {
+          id: sessionUser.id,
+          email: sessionUser.email,
+          name: profile.name || sessionUser.email,
+          bio: profile.bio,
+          avatarUrl: profile.avatarUrl,
+        }
+      : null;
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: Boolean(user), login, logout }}
+      value={{
+        user,
+        isAuthenticated: Boolean(user),
+        isLoading,
+        login,
+        signup,
+        logout,
+        updateProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>
