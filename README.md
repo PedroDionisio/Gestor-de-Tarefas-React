@@ -11,7 +11,7 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 | **Context API** + `useReducer`             | Estado global da sessão e do perfil (`AuthContext`) e das tarefas (`TasksContext`) |
 | **Supabase Auth**                          | Registo, login, sessões e confirmação de email                                     |
 | **Supabase (PostgreSQL)**                  | Base de dados relacional, com Row Level Security                                   |
-| **Tailwind CSS**                           | Estilos                                                                            |
+| **Tailwind CSS**                           | Estilos, com tema próprio (cores e tipografia)                                     |
 | **Lucide React**                           | Ícones                                                                             |
 | **ESLint**                                 | Qualidade e consistência do código                                                 |
 
@@ -21,6 +21,7 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 
 - 📝 Registo com nome, email e palavra-passe, com confirmação de email
 - 🔐 Login e logout, com mensagens de erro claras (credenciais erradas, email por confirmar, conta já existente)
+- 🔑 Recuperação de palavra-passe por email, com link de uso único
 - 🛡️ Rotas protegidas: sem sessão iniciada, o utilizador é redirecionado para o login e, depois de entrar, volta à página que tentou abrir
 - 💾 A sessão mantém-se ao atualizar a página e termina com "Sair"
 
@@ -47,9 +48,15 @@ Aplicação web para gestão de tarefas do dia a dia, construída como projeto d
 - 📊 Contador de tarefas concluídas
 - 📅 Datas guardadas pela base de dados e apresentadas em formato português
 
-### Acessibilidade
+## 🎨 Design
 
-- ♿ Botões com ícone com `aria-label`, formulários com `label` associado a cada campo, mensagens de erro
+- **Estilo minimalista**: Inspirado no Notion: fundos neutros, texto quase preto e uma única cor de destaque (azul) reservada para as ações principais e para as tarefas concluídas
+- **Tipografia**: Instrument Sans e tema próprio definido no `tailwind.config.js`, para alterar cores e letra num só sítio
+- **Responsivo**: Menu próprio no telemóvel; login e registo em duas colunas nos ecrãs grandes
+- **Componentes reutilizáveis**: (`Button`, `FormField`, `Avatar`, `Logo`) para manter o mesmo aspeto em toda a app
+- **Acessibilidade**: Contraste de cores, navegação completa por teclado e alvos de toque de pelo menos 24px
+
+> **Nota:** Toda a direção visual (estilo minimalista a preto e branco com uma cor de destaque, e a organização das páginas de login, registo, Recuperar Password) foi definida por mim. A implementação do sistema de estilos (tema do Tailwind, componentes e regras de acessibilidade) foi feita com apoio de IA, como forma de acelerar o processo e depois revista e ajustada por mim.
 
 ## 🗄️ Base de dados
 
@@ -87,6 +94,25 @@ O esquema completo está em [`supabase/schema.sql`](supabase/schema.sql).
 
 ## 📸 Pré-visualização
 
-_(espaço reservado para screenshot)_
+<div align="center">
+  <img width="800" alt="Lista de tarefas com barra de progresso e filtros" src="documentos/Tarefas.png" />
+  <br/>
+  <em>Lista de tarefas com progresso, filtros e pesquisa</em>
+  <br/><br/>
+  <table>
+    <tr>
+      <td align="center">
+        <img width="400" alt="Página de login" src="documentos/Login.png" />
+        <br/>
+        <em>Login</em>
+      </td>
+      <td align="center">
+        <img width="400" alt="Página de registo" src="documentos/Registo.png" />
+        <br/>
+        <em>Registo</em>
+      </td>
+    </tr>
+  </table>
+</div>
 
 Projeto desenvolvido para fins de aprendizagem.
