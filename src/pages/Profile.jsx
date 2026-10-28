@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import Avatar from "../components/Avatar";
+import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 import FormField from "../components/FormField";
 import Title from "../components/Title";
+import { inputClass } from "../utils/styles";
 
 const MAX_NAME_LENGTH = 60;
 const MAX_BIO_LENGTH = 300;
@@ -44,91 +47,83 @@ function Profile() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Title>Perfil</Title>
 
-      {isEditing ? (
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col space-y-4 rounded-md bg-slate-200 p-6 shadow"
-        >
-          <FormField
-            label="Nome"
-            id="name"
-            type="text"
-            maxLength={MAX_NAME_LENGTH}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="bio" className="text-sm font-medium text-slate-700">
-              Sobre mim
-            </label>
-            <textarea
-              id="bio"
-              rows={4}
-              maxLength={MAX_BIO_LENGTH}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="rounded-md border border-slate-300 px-4 py-2"
-            />
-            <span className="text-right text-xs text-slate-500">
-              {bio.length}/{MAX_BIO_LENGTH}
-            </span>
+      <section className="overflow-hidden rounded-xl border border-line bg-surface">
+        <div className="flex flex-col items-center gap-4 p-6 text-center sm:flex-row sm:text-left">
+          <Avatar name={user.name} size="lg" />
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-xl font-semibold">{user.name}</h2>
+            <p className="truncate text-sm text-muted">{user.email}</p>
           </div>
+          {!isEditing && (
+            <Button variant="secondary" onClick={handleEditClick}>
+              Editar perfil
+            </Button>
+          )}
+        </div>
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+        <div className="border-t border-line p-6">
+          {isEditing ? (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <FormField
+                label="Nome"
+                id="name"
+                type="text"
+                maxLength={MAX_NAME_LENGTH}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
 
-          <div className="flex gap-2">
-            <button
-              disabled={isSaving}
-              className="flex-1 rounded-md bg-slate-500 px-4 py-2 font-medium text-white hover:bg-slate-600 disabled:opacity-60"
-            >
-              {isSaving ? "A guardar..." : "Guardar"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              disabled={isSaving}
-              className="flex-1 rounded-md bg-slate-300 px-4 py-2 font-medium text-slate-700 hover:bg-slate-400"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
-      ) : (
-        <div className="space-y-4 rounded-md bg-slate-200 p-6 shadow">
-          <dl className="space-y-3">
-            <div>
-              <dt className="text-sm font-medium text-slate-500">Nome</dt>
-              <dd className="text-lg text-slate-700">{user.name}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-slate-500">Email</dt>
-              <dd className="text-lg text-slate-700">{user.email}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-slate-500">Sobre mim</dt>
-              <dd className="whitespace-pre-line text-slate-700">
+              <div className="space-y-1.5">
+                <label htmlFor="bio" className="block text-sm font-medium">
+                  Sobre mim
+                </label>
+                <textarea
+                  id="bio"
+                  rows={4}
+                  maxLength={MAX_BIO_LENGTH}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  className={inputClass}
+                />
+                <p className="text-right text-xs text-muted">
+                  {bio.length}/{MAX_BIO_LENGTH}
+                </p>
+              </div>
+
+              {error && <ErrorMessage>{error}</ErrorMessage>}
+
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsEditing(false)}
+                  disabled={isSaving}
+                >
+                  Cancelar
+                </Button>
+                <Button disabled={isSaving}>
+                  {isSaving ? "A guardar..." : "Guardar"}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted">Sobre mim</h3>
+              <p className="whitespace-pre-line leading-relaxed">
                 {user.bio || (
-                  <span className="italic text-slate-500">
+                  <span className="text-muted">
                     Ainda não escreveste nada sobre ti.
                   </span>
                 )}
-              </dd>
+              </p>
             </div>
-          </dl>
-
-          <button
-            onClick={handleEditClick}
-            className="w-full rounded-md bg-slate-500 px-4 py-2 font-medium text-white hover:bg-slate-600"
-          >
-            Editar perfil
-          </button>
+          )}
         </div>
-      )}
+      </section>
     </div>
   );
 }

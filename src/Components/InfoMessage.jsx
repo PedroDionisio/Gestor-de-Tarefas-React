@@ -2,7 +2,7 @@ function InfoMessage({ children }) {
   return (
     <p
       role="status"
-      className="rounded-md bg-green-100 p-3 text-sm text-green-800"
+      className="rounded-md border border-accent/20 bg-accent-soft px-3 py-2 text-sm text-accent-hover"
     >
       {children}
     </p>

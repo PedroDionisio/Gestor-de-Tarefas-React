@@ -9,6 +9,9 @@ import { TasksProvider } from "./contexts/TasksContext";
 import AppLayout from "./components/AppLayout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 import TasksPage from "./pages/TasksPage";
 import TaskDetails from "./pages/TaskDetails";
 import Profile from "./pages/Profile";
@@ -17,6 +20,8 @@ import NotFound from "./pages/NotFound";
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/registo", element: <Signup /> },
+  { path: "/recuperar-password", element: <ForgotPassword /> },
+  { path: "/nova-password", element: <ResetPassword /> },
   {
     element: (
       <ProtectedRoute>

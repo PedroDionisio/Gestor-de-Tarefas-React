@@ -2,19 +2,20 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import AuthLayout from "../components/AuthLayout";
+import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 import FormField from "../components/FormField";
 import Loader from "../components/Loader";
+import {
+  MIN_PASSWORD_LENGTH,
+  validatePassword,
+} from "../utils/validatePassword";
 
-const MIN_PASSWORD_LENGTH = 6;
 const MAX_NAME_LENGTH = 60;
 
 function validate({ name, password, confirmPassword }) {
   if (!name.trim()) return "Indica o teu nome.";
-  if (password.length < MIN_PASSWORD_LENGTH)
-    return `A palavra-passe tem de ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`;
-  if (password !== confirmPassword) return "As palavras-passe não coincidem.";
-  return "";
+  return validatePassword(password, confirmPassword);
 }
 
 function Signup() {
@@ -65,15 +66,14 @@ function Signup() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout
+      title="Criar conta"
+      subtitle="Começa com uma lista vazia e uma tarefa de boas-vindas."
+    >
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col space-y-4 rounded-md bg-slate-200 p-6 shadow"
+        className="space-y-4 rounded-xl border border-line bg-surface p-6 shadow-sm"
       >
-        <h2 className="text-center text-xl font-bold text-slate-600">
-          Criar conta
-        </h2>
-
         <FormField
           label="Nome"
           id="name"
@@ -115,22 +115,23 @@ function Signup() {
           required
         />
 
+        <p className="text-xs text-muted">
+          Mínimo de {MIN_PASSWORD_LENGTH} caracteres.
+        </p>
+
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <button
-          disabled={isSubmitting}
-          className="rounded-md bg-slate-500 px-4 py-2 font-medium text-white hover:bg-slate-600 disabled:opacity-60"
-        >
+        <Button disabled={isSubmitting} className="w-full">
           {isSubmitting ? "A criar conta..." : "Criar conta"}
-        </button>
-
-        <p className="text-center text-sm text-slate-600">
-          Já tens conta?{" "}
-          <Link to="/login" className="font-medium text-slate-700 underline">
-            Inicia sessão
-          </Link>
-        </p>
+        </Button>
       </form>
+
+      <p className="text-center text-sm text-muted">
+        Já tens conta?{" "}
+        <Link to="/login" className="font-medium text-accent hover:underline">
+          Inicia sessão
+        </Link>
+      </p>
     </AuthLayout>
   );
 }

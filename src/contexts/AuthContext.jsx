@@ -1,6 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../services/supabase";
-import { login, logout, signup } from "../services/apiAuth";
+import {
+  login,
+  logout,
+  requestPasswordReset,
+  signup,
+  updatePassword,
+} from "../services/apiAuth";
 import {
   getProfile,
   updateProfile as updateProfileApi,
@@ -76,6 +82,8 @@ function AuthProvider({ children }) {
         login,
         signup,
         logout,
+        requestPasswordReset,
+        updatePassword,
         updateProfile,
       }}
     >

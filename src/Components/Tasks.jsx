@@ -1,22 +1,28 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ChevronRightIcon, SquarePen, TrashIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Check, Search, SquarePen, Trash2 } from "lucide-react";
+import Button from "./Button";
 import IconButton from "./IconButton";
 import Loader from "./Loader";
 import { formatDate } from "../utils/formatDate";
+import { inputClass, selectClass } from "../utils/styles";
 import { useTasks } from "../contexts/TasksContext";
 
 const FILTERS = [
-  { value: "all", label: "Todas", emptyMessage: "Sem tarefas!" },
+  {
+    value: "all",
+    label: "Todas",
+    emptyMessage: "Ainda não tens tarefas. Cria a primeira acima.",
+  },
   {
     value: "pending",
     label: "Pendentes",
-    emptyMessage: "Sem tarefas pendentes!",
+    emptyMessage: "Não tens tarefas pendentes.",
   },
   {
     value: "completed",
     label: "Concluídas",
-    emptyMessage: "Sem tarefas concluídas!",
+    emptyMessage: "Ainda não concluíste nenhuma tarefa.",
   },
 ];
 
@@ -28,10 +34,9 @@ function Tasks() {
 
   const numCompleted = tasks.filter((task) => task.isCompleted).length;
   const numTotal = tasks.length;
-
-  function handleFilterClick(filterValue) {
-    setFilter((current) => (current === filterValue ? "all" : filterValue));
-  }
+  const percentCompleted = numTotal
+    ? Math.round((numCompleted / numTotal) * 100)
+    : 0;
 
   const filteredTasks = tasks
     .filter((task) => {
@@ -52,79 +57,117 @@ function Tasks() {
   const emptyMessage = FILTERS.find((f) => f.value === filter).emptyMessage;
 
   return (
-    <div className="space-y-4 rounded-md bg-slate-200 p-6 shadow">
+    <section className="space-y-4">
       {numTotal > 0 && (
-        <p className="text-center text-sm text-slate-600">
-          {numCompleted} de {numTotal} tarefas concluídas
-        </p>
+        <div className="space-y-2">
+          <div className="flex items-baseline justify-between text-sm">
+            <span className="font-medium">
+              {numCompleted} de {numTotal} tarefas concluídas
+            </span>
+            <span className="text-muted">{percentCompleted}%</span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-line">
+            <div
+              className="h-full rounded-full bg-accent transition-[width] duration-500"
+              style={{ width: `${percentCompleted}%` }}
+            />
+          </div>
+        </div>
       )}
 
-      <div className="flex justify-center gap-2">
-        {FILTERS.map(({ value, label }) => (
-          <button
-            key={value}
-            onClick={() => handleFilterClick(value)}
-            className={`rounded-md px-4 py-2 font-medium ${
-              filter === value
-                ? "bg-slate-500 text-white"
-                : "bg-slate-300 text-slate-700"
-            }`}
+      <div className="space-y-2">
+        <div className="relative">
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+          />
+          <input
+            type="text"
+            placeholder="Pesquisar tarefa..."
+            aria-label="Pesquisar tarefa"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`${inputClass} pl-9`}
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex w-full rounded-md border border-line bg-surface p-0.5 sm:w-auto">
+            {FILTERS.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setFilter(value)}
+                aria-pressed={filter === value}
+                className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors sm:flex-none ${
+                  filter === value
+                    ? "bg-ink text-surface"
+                    : "text-muted hover:text-ink"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <select
+            value={sortBy}
+            aria-label="Ordenar tarefas"
+            onChange={(e) => setSortBy(e.target.value)}
+            className={selectClass}
           >
-            {label}
-          </button>
-        ))}
+            <option value="none">Ordem de criação</option>
+            <option value="date">Mais antigas primeiro</option>
+            <option value="title">Por título</option>
+          </select>
+        </div>
       </div>
-
-      <input
-        type="text"
-        placeholder="Pesquisar tarefa..."
-        aria-label="Pesquisar tarefa"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full rounded-md border border-slate-300 px-4 py-2"
-      />
-
-      <select
-        value={sortBy}
-        aria-label="Ordenar tarefas"
-        onChange={(e) => setSortBy(e.target.value)}
-        className="w-full rounded-md border border-slate-300 px-4 py-2"
-      >
-        <option value="none">Ordem de criação</option>
-        <option value="date">Ordenar por data</option>
-        <option value="title">Ordenar por título</option>
-      </select>
 
       {isLoading && <Loader />}
 
       {!isLoading && sortedTasks.length === 0 && (
-        <p className="text-center text-slate-500">
+        <p className="rounded-xl border border-dashed border-line px-4 py-10 text-center text-sm text-muted">
           {searchQuery
-            ? `Nenhuma tarefa encontrada para "${searchQuery}"`
+            ? `Nenhuma tarefa encontrada para "${searchQuery}".`
             : emptyMessage}
         </p>
       )}
 
-      <ul className="space-y-4">
-        {sortedTasks.map((task) => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-      </ul>
-    </div>
+      {sortedTasks.length > 0 && (
+        <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+          {sortedTasks.map((task) => (
+            <TaskItem key={task.id} task={task} />
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 
 function TaskItem({ task }) {
   const { toggleTask, updateTask, deleteTask } = useTasks();
-  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(task.description);
+  const [editError, setEditError] = useState("");
 
-  async function handleSave() {
+  function handleEditClick() {
+    setEditTitle(task.title);
+    setEditDescription(task.description);
+    setEditError("");
+    setIsEditing(true);
+  }
+
+  async function handleSave(e) {
+    e.preventDefault();
+
+    if (!editTitle.trim()) {
+      setEditError("O título não pode ficar vazio.");
+      return;
+    }
+
     await updateTask(task.id, {
-      title: editTitle,
-      description: editDescription,
+      title: editTitle.trim(),
+      description: editDescription.trim(),
     });
     setIsEditing(false);
   }
@@ -134,61 +177,87 @@ function TaskItem({ task }) {
       deleteTask(task.id);
   }
 
-  return (
-    <li className="flex gap-2">
-      {isEditing ? (
-        <div className="flex w-full flex-col gap-2">
+  if (isEditing)
+    return (
+      <li className="bg-canvas/60 px-4 py-3">
+        <form onSubmit={handleSave} className="space-y-2">
           <input
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             aria-label="Título"
-            className="w-full rounded-md border border-slate-300 px-2 py-2"
+            className={inputClass}
           />
           <textarea
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
             aria-label="Descrição"
-            className="w-full rounded-md border border-slate-300 px-2 py-2"
             rows={3}
+            className={inputClass}
           />
-        </div>
-      ) : (
-        <button
-          onClick={() => toggleTask(task.id)}
-          className={`w-full rounded-md bg-slate-400 p-2 text-left text-white ${
-            task.isCompleted ? "line-through" : ""
+          {editError && (
+            <p role="alert" className="text-sm text-red-600">
+              {editError}
+            </p>
+          )}
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsEditing(false)}
+            >
+              Cancelar
+            </Button>
+            <Button>Guardar</Button>
+          </div>
+        </form>
+      </li>
+    );
+
+  return (
+    <li className="group flex items-start gap-3 px-4 py-3 transition-colors hover:bg-canvas/60">
+      <button
+        onClick={() => toggleTask(task.id)}
+        aria-label={
+          task.isCompleted ? "Marcar como pendente" : "Marcar como concluída"
+        }
+        aria-pressed={task.isCompleted}
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+          task.isCompleted
+            ? "border-accent bg-accent text-white"
+            : "border-line hover:border-accent"
+        }`}
+      >
+        {task.isCompleted && <Check size={14} strokeWidth={3} />}
+      </button>
+
+      <div className="min-w-0 flex-1">
+        <Link
+          to={`/tarefas/${task.id}`}
+          className={`block truncate font-medium hover:underline ${
+            task.isCompleted
+              ? "text-muted line-through decoration-accent decoration-2"
+              : ""
           }`}
         >
-          <span className="block">{task.title}</span>
-          <span className="block text-xs font-normal text-slate-200">
-            Criada a {formatDate(task.createdAt)}
-          </span>
-        </button>
-      )}
+          {task.title}
+        </Link>
+        {task.description && (
+          <p className="truncate text-sm text-muted">{task.description}</p>
+        )}
+        <p className="mt-1 text-xs text-muted">
+          Criada a {formatDate(task.createdAt)}
+        </p>
+      </div>
 
-      {isEditing ? (
-        <button
-          onClick={handleSave}
-          className="rounded-md bg-green-500 p-2 text-white"
-        >
-          Guardar
-        </button>
-      ) : (
-        <IconButton label="Editar tarefa" onClick={() => setIsEditing(true)}>
-          <SquarePen />
+      <div className="flex shrink-0 gap-1 sm:opacity-0 sm:transition-opacity sm:group-focus-within:opacity-100 sm:group-hover:opacity-100">
+        <IconButton label="Editar tarefa" onClick={handleEditClick}>
+          <SquarePen size={18} />
         </IconButton>
-      )}
-
-      <IconButton
-        label="Ver detalhes"
-        onClick={() => navigate(`/tarefas/${task.id}`)}
-      >
-        <ChevronRightIcon />
-      </IconButton>
-      <IconButton label="Eliminar tarefa" onClick={handleDelete}>
-        <TrashIcon />
-      </IconButton>
+        <IconButton label="Eliminar tarefa" onClick={handleDelete}>
+          <Trash2 size={18} />
+        </IconButton>
+      </div>
     </li>
   );
 }

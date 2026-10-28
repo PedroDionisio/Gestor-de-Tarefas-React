@@ -4,7 +4,7 @@ function IconButton({ children, label, onClick }) {
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="rounded-md bg-slate-400 p-2 text-white hover:bg-slate-500"
+      className="rounded-md p-1.5 text-muted transition-colors hover:bg-line/60 hover:text-ink"
     >
       {children}
     </button>

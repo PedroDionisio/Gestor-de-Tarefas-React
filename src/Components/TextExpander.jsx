@@ -9,7 +9,7 @@ function TextExpander({
 }) {
   const [isExpanded, setIsExpanded] = useState(expanded);
 
-  const words = children.split(" ");
+  const words = children.split(/\s+/);
   const isLongText = words.length > collapsedNumWords;
 
   const displayText = isExpanded
@@ -17,14 +17,12 @@ function TextExpander({
     : words.slice(0, collapsedNumWords).join(" ") + (isLongText ? "..." : "");
 
   return (
-    <div>
-      <span className="text-slate-600 whitespace-pre-line">{displayText}</span>
+    <div className="leading-relaxed">
+      <span className="whitespace-pre-line text-ink/90">{displayText}</span>
       {isLongText && (
         <button
           onClick={() => setIsExpanded((exp) => !exp)}
-          className={`ml-2 font-medium ${
-            isExpanded ? "text-[#1f09cd]" : "text-[#ff6622]"
-          }`}
+          className="ml-2 text-sm font-medium text-accent hover:underline"
         >
           {isExpanded ? collapseButtonText : expandButtonText}
         </button>

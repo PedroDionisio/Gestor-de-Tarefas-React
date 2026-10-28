@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { clearRecovery } from "./passwordRecovery";
 
 const ERROR_MESSAGES = {
   "Invalid login credentials": "Email ou palavra-passe incorretos.",
@@ -7,6 +8,10 @@ const ERROR_MESSAGES = {
     "Ainda não confirmaste o teu email. Abre o link que te enviámos para ativar a conta.",
   "email rate limit exceeded":
     "Foram enviados demasiados emails. Tenta novamente daqui a alguns minutos.",
+  "New password should be different from the old password.":
+    "A nova palavra-passe tem de ser diferente da anterior.",
+  "Auth session missing!":
+    "O link expirou ou já foi usado. Pede um novo link de recuperação.",
 };
 
 function translateError(error) {
@@ -35,9 +40,23 @@ export async function signup({ name, email, password }) {
 export async function login({ email, password }) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw translateError(error);
+  clearRecovery();
+}
+
+export async function requestPasswordReset(email) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/nova-password`,
+  });
+  if (error) throw translateError(error);
+}
+
+export async function updatePassword(password) {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw translateError(error);
 }
 
 export async function logout() {
+  clearRecovery();
   const { error } = await supabase.auth.signOut();
   if (error) throw translateError(error);
 }

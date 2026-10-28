@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import AuthLayout from "../components/AuthLayout";
+import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
 import FormField from "../components/FormField";
 import InfoMessage from "../components/InfoMessage";
@@ -36,15 +37,11 @@ function Login() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout title="Iniciar sessão" subtitle="Bem-vindo de volta.">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col space-y-4 rounded-md bg-slate-200 p-6 shadow"
+        className="space-y-4 rounded-xl border border-line bg-surface p-6 shadow-sm"
       >
-        <h2 className="text-center text-xl font-bold text-slate-600">
-          Iniciar sessão
-        </h2>
-
         <FormField
           label="Email"
           id="email"
@@ -65,23 +62,29 @@ function Login() {
           required
         />
 
+        <div className="-mt-2 flex justify-end">
+          <Link
+            to="/recuperar-password"
+            className="text-sm font-medium text-accent hover:underline"
+          >
+            Esqueceste-te da palavra-passe?
+          </Link>
+        </div>
+
         {notice && !error && <InfoMessage>{notice}</InfoMessage>}
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <button
-          disabled={isSubmitting}
-          className="rounded-md bg-slate-500 px-4 py-2 font-medium text-white hover:bg-slate-600 disabled:opacity-60"
-        >
+        <Button disabled={isSubmitting} className="w-full">
           {isSubmitting ? "A entrar..." : "Entrar"}
-        </button>
-
-        <p className="text-center text-sm text-slate-600">
-          Ainda não tens conta?{" "}
-          <Link to="/registo" className="font-medium text-slate-700 underline">
-            Regista-te
-          </Link>
-        </p>
+        </Button>
       </form>
+
+      <p className="text-center text-sm text-muted">
+        Ainda não tens conta?{" "}
+        <Link to="/registo" className="font-medium text-accent hover:underline">
+          Regista-te
+        </Link>
+      </p>
     </AuthLayout>
   );
 }
