@@ -100,8 +100,8 @@ function Tasks() {
                 aria-pressed={filter === value}
                 className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors sm:flex-none ${
                   filter === value
-                    ? "bg-ink text-surface"
-                    : "text-muted hover:text-ink"
+                    ? "bg-accent text-white"
+                    : "text-muted hover:text-accent"
                 }`}
               >
                 {label}
